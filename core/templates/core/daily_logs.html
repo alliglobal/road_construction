@@ -1,0 +1,144 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h4>📘 Nhật ký thi công – Dự án: {{ project.name }}</h4>
+
+<hr>
+
+<!-- ===== FORM NHẬP NHẬT KÝ ===== -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        Thêm nhật ký thi công
+    </div>
+
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Ngày thi công</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">Công việc</label>
+                    <select name="work_item" class="form-control" required>
+                        <option value="">-- Chọn công việc --</option>
+                        {% for item in work_items %}
+                        <option value="{{ item.id }}">
+                            {{ item.name }} ({{ item.completed_quantity }}/{{ item.quantity }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Khối lượng thực hiện hôm nay</label>
+                    <input type="number" step="0.01" name="quantity_done" class="form-control" required>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">Ghi chú</label>
+                    <input type="text" name="note" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hình ảnh hiện trường</label>
+                <input type="file" name="images" class="form-control" multiple>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                💾 Lưu nhật ký
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ===== CẢNH BÁO VẬT TƯ ===== -->
+{% if warnings %}
+<div class="alert alert-warning">
+    <strong>⚠️ Cảnh báo vật tư – Công việc: {{ warnings.0.work_item }}</strong>
+    <ul class="mb-0">
+        {% for w in warnings %}
+        <li>
+            {{ w.material }}:
+            {{ w.used }} / {{ w.planned }}
+            ({{ w.percent }}%)
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+
+<!-- ===== DANH SÁCH NHẬT KÝ ===== -->
+<div class="card">
+    <div class="card-header bg-secondary text-white">
+        Danh sách nhật ký đã nhập
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Ngày</th>
+                    <th>Công việc</th>
+                    <th>Khối lượng</th>
+                    <th>Ghi chú</th>
+                    <th>Vật tư tiêu hao</th>
+                    <th width="120">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in daily_logs %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.work_item.name }}</td>
+                    <td>{{ log.quantity_done }}</td>
+                    <td>{{ log.note }}</td>
+                    <td>
+                        {% if log.material_usages.all %}
+                        <ul class="mb-0">
+                            {% for m in log.material_usages.all %}
+                            <li>
+                                {{ m.material.name }}:
+                                {{ m.quantity_used|floatformat:2 }}
+                                {{ m.material.unit }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'daily_log_edit' log.id %}"
+                        class="btn btn-sm btn-warning">
+                            ✏️
+                        </a>
+
+                        <a href="{% url 'daily_log_delete' log.id %}"
+                        class="btn btn-sm btn-danger">
+                            🗑️
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        Chưa có nhật ký thi công
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

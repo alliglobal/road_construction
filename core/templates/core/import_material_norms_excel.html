@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h4>Import định mức vật tư – {{ project.name }}</h4>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-success">
+        Import
+    </button>
+
+    <a href="{% url 'material_norms' project.id %}" class="btn btn-secondary">
+        Quay lại
+    </a>
+</form>
+{% endblock %}

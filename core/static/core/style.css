@@ -1,0 +1,120 @@
+/* ==============================
+   GLOBAL
+============================== */
+
+body {
+    background-color: #f8f9fa;
+    font-size: 15px;
+}
+
+h2, h4, h5 {
+    font-weight: 600;
+}
+
+hr {
+    margin: 20px 0;
+}
+
+/* ==============================
+   TABLE
+============================== */
+
+.table {
+    background-color: #ffffff;
+}
+
+.table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* ==============================
+   BUTTON
+============================== */
+
+.btn {
+    border-radius: 6px;
+    padding: 6px 14px;
+}
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 14px;
+}
+
+/* ==============================
+   CARD (Nhật ký)
+============================== */
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background-color: #e9ecef;
+    font-weight: 600;
+}
+
+/* ==============================
+   IMAGE (Nhật ký thi công)
+============================== */
+
+.img-thumbnail {
+    height: 160px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.img-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+/* ==============================
+   BADGE (Kho vật tư)
+============================== */
+
+.badge {
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+/* ==============================
+   FORM
+============================== */
+
+.form-label {
+    font-weight: 600;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* ==============================
+   DASHBOARD
+============================== */
+
+.dashboard-actions a {
+    margin-right: 6px;
+}
+
+/* ==============================
+   FOOTER (nếu cần sau này)
+============================== */
+
+.footer {
+    margin-top: 40px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}

@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h4>Danh sách dự án</h4>
+
+<div class="mb-3">
+    <a href="{% url 'create_project' %}" class="btn btn-success">
+        + Tạo dự án
+    </a>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Tên dự án</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in projects %}
+        <tr>
+            <!-- ✅ CLICK VÀO TÊN DỰ ÁN -->
+            <td>
+                <a href="{% url 'project_dashboard' p.id %}"
+                   class="fw-bold text-decoration-none">
+                    {{ p.name }}
+                </a>
+            </td>
+            <td>{{ p.start_date }}</td>
+            <td>{{ p.end_date }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" class="text-center">
+                Chưa có dự án
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

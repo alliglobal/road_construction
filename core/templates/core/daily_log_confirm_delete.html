@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="alert alert-danger">
+    <h5>⚠️ Xác nhận xoá nhật ký</h5>
+
+    <p>
+        Ngày: <strong>{{ log.log_date }}</strong><br>
+        Công việc: <strong>{{ log.work_item.name }}</strong><br>
+        Khối lượng: <strong>{{ log.quantity_done }}</strong>
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">🗑️ Xoá</button>
+        <a href="{% url 'daily_logs' log.project.id %}"
+           class="btn btn-secondary">
+            Huỷ
+        </a>
+    </form>
+</div>
+
+{% endblock %}
+{% comment %} TEMPLATE – XÁC NHẬN XOÁ {% endcomment %}

@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="container" style="max-width: 500px">
+
+<h5 class="mb-3">✏️ Sửa nhật ký</h5>
+
+<form method="post">
+{% csrf_token %}
+
+<div class="mb-3">
+    <label class="form-label">Công việc</label>
+    <input class="form-control" disabled
+           value="{{ item.work_item.index_code }} – {{ item.work_item.name }}">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Khối lượng</label>
+    <input type="number"
+           step="0.01"
+           min="0"
+           name="quantity_done"
+           class="form-control"
+           value="{{ item.quantity_done }}"
+           required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Ghi chú</label>
+    <textarea name="note" class="form-control" rows="3">{{ item.note }}</textarea>
+</div>
+
+<button class="btn btn-primary">💾 Lưu</button>
+<a href="javascript:history.back()" class="btn btn-secondary">↩️ Quay lại</a>
+
+</form>
+</div>
+
+{% endblock %}

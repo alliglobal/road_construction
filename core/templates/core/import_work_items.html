@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h3>Import khối lượng công việc</h3>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="excel_file" required>
+    <br><br>
+    <button class="btn btn-success">Import</button>
+    <a href="{% url 'work_items' project.id %}" class="btn btn-secondary">
+        Quay lại
+    </a>
+</form>
+{% endblock %}

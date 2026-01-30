@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h4>Import vật tư bằng Excel</h4>
+
+<div class="alert alert-info">
+    <strong>Định dạng Excel:</strong><br>
+    Tên vật tư | Đơn vị | Khối lượng | Mức cảnh báo 1 | Mức cảnh báo 2
+</div>
+
+<form method="post" enctype="multipart/form-data"
+      style="max-width: 600px;">
+    {% csrf_token %}
+    {{ form.file }}
+
+    <br><br>
+
+    <button type="submit" class="btn btn-success">
+        Import vật tư
+    </button>
+
+    <a href="{% url 'warehouse' %}" class="btn btn-secondary">
+        Quay lại kho
+    </a>
+</form>
+
+{% endblock %}

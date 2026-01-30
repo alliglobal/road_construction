@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h3 class="mb-3">
+    📐 Định mức vật tư – {{ project.name }}
+</h3>
+
+<!-- ===== ACTION BAR ===== -->
+<div class="mb-3 d-flex gap-2">
+    <a href="{% url 'import_material_norms_excel' project.id %}"
+       class="btn btn-info">
+        📥 Import định mức từ Excel
+    </a>
+
+    <a href="{% url 'project_dashboard' project.id %}"
+       class="btn btn-secondary">
+        ⬅ Quay lại Dashboard dự án
+    </a>
+</div>
+
+<!-- ===== TABLE ===== -->
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th style="width: 40px">#</th>
+            <th>Tên vật tư</th>
+            <th>Đơn vị</th>
+            <th>Khối lượng định mức</th>
+            <th>Mức cảnh báo 1</th>
+            <th>Mức cảnh báo 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for norm in norms %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="fw-bold">
+                {{ norm.material.name }}
+            </td>
+            <td>{{ norm.material.unit }}</td>
+            <td>
+                {{ norm.norm_quantity }}
+            </td>
+            <td>
+                {{ norm.material.warning_level_1 }}
+            </td>
+            <td>
+                {{ norm.material.warning_level_2 }}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center text-muted">
+                Chưa có định mức vật tư cho dự án này
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

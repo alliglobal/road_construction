@@ -1,0 +1,178 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<div class="container">
+
+<h4 class="mb-3">
+    📘 Ghi nhật ký thi công – {{ log_date|date:"d/m/Y" }}
+</h4>
+
+<form method="post">
+{% csrf_token %}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Công việc</label>
+        <select id="work_item_select"
+                name="work_item_id"
+                class="form-select"
+                required>
+            <option value="">-- Chọn công việc --</option>
+            {% for wi in work_items %}
+            <option value="{{ wi.id }}">
+                {{ wi.index_code }} – {{ wi.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Khối lượng thực hiện</label>
+        <input type="number"
+               step="0.01"
+               min="0"
+               id="quantity_input"
+               name="quantity"
+               class="form-control"
+               required>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header bg-light">
+        🔧 Vật tư tiêu hao (tự động)
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-bordered mb-0" id="materialTable">
+            <thead>
+                <tr class="text-center">
+                    <th>Vật tư</th>
+                    <th>Định mức</th>
+                    <th>Hệ số</th>
+                    <th>Tiêu hao</th>
+                    <th>Đơn vị</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        Chọn công việc và nhập khối lượng
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<button class="btn btn-primary">
+    💾 Lưu nhật ký
+</button>
+
+</form>
+
+<hr class="my-4">
+
+<h5 class="mb-3">📋 Nhật ký đã ghi trong ngày</h5>
+
+{% if items %}
+<table class="table table-bordered table-sm align-middle">
+    <thead class="table-light text-center">
+        <tr>
+            <th style="width: 50px;">#</th>
+            <th>Công việc</th>
+            <th style="width: 150px;">Khối lượng</th>
+            <th style="width:120px">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td class="text-center">{{ forloop.counter }}</td>
+            <td>
+                {{ item.work_item.index_code }} – {{ item.work_item.name }}
+            </td>
+            <td class="text-end fw-bold">
+                {{ item.quantity_done }}
+            </td>
+            <td class="text-center">
+    <a href="{% url 'daily_log_item_edit' item.id %}"
+       class="btn btn-sm btn-outline-primary">
+        ✏️
+    </a>
+
+    <a href="{% url 'daily_log_item_delete' item.id %}"
+       class="btn btn-sm btn-outline-danger"
+       onclick="return confirm('Xoá dòng này?')">
+        🗑
+    </a>
+</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-secondary">
+    Chưa có công việc nào được ghi trong ngày này.
+</div>
+{% endif %}
+
+
+
+</div>
+
+<script>
+let materials = [];
+
+const workSelect = document.getElementById('work_item_select');
+const qtyInput = document.getElementById('quantity_input');
+const tableBody = document.querySelector('#materialTable tbody');
+
+workSelect.addEventListener('change', () => {
+    const workItemId = workSelect.value;
+    tableBody.innerHTML = '';
+
+    if (!workItemId) return;
+
+    fetch(`/api/work-item/${workItemId}/materials/`)
+        .then(res => res.json())
+        .then(data => {
+            materials = data;
+            renderMaterials();
+        });
+});
+
+qtyInput.addEventListener('input', renderMaterials);
+
+function renderMaterials() {
+    tableBody.innerHTML = '';
+
+    const qty = parseFloat(qtyInput.value || 0);
+
+    if (materials.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    Công việc chưa có dự trù vật tư
+                </td>
+            </tr>`;
+        return;
+    }
+
+    materials.forEach(m => {
+        const used = qty * m.norm * m.factor;
+
+        tableBody.innerHTML += `
+        <tr>
+            <td>${m.material}</td>
+            <td class="text-end">${m.norm}</td>
+            <td class="text-end">${m.factor}</td>
+            <td class="text-end fw-bold">${used.toFixed(2)}</td>
+            <td class="text-center">${m.unit}</td>
+        </tr>`;
+    });
+}
+</script>
+
+{% endblock %}

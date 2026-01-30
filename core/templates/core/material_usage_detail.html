@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="container">
+    <h4 class="mb-3">
+        📦 Chi tiết sử dụng vật tư: <b>{{ material.name }}</b>
+    </h4>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th style="width:120px">Ngày</th>
+                <th>Công việc</th>
+                <th>Khối lượng</th>
+                <th>Đơn vị</th>
+                <th style="width:120px">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usages %}
+            <tr>
+                <td class="text-center">
+                    {{ u.daily_log_item.daily_log.log_date|date:"d/m/Y" }}
+                </td>
+                <td>
+                    {{ u.daily_log_item.work_item.index_code }} –
+                    {{ u.daily_log_item.work_item.name }}
+                </td>
+                <td class="text-end fw-bold">
+                    {{ u.quantity_used|floatformat:2 }}
+                </td>
+                <td class="text-center">
+                    {{ material.unit }}
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="{% url 'daily_log_form'
+                           project.id
+                           u.daily_log_item.daily_log.log_date.year
+                           u.daily_log_item.daily_log.log_date.month
+                           u.daily_log_item.daily_log.log_date.day
+                       %}">
+                        📘 Xem nhật ký
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    Chưa có dữ liệu sử dụng
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h4>Quản lý kho vật tư</h4>
+
+<h4>Quản lý kho vật tư</h4>
+
+<div class="mb-3">
+    {% comment %} <a href="{% url 'import_materials_excel' %}"
+       class="btn btn-warning">
+        Import vật tư (Excel)
+    </a> {% endcomment %}
+
+    <a href="{% url 'create_warehouse_transaction' %}"
+       class="btn btn-success">
+        + Thêm giao dịch kho
+    </a>
+</div>
+
+
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Ngày</th>
+            <th>Vật tư</th>
+            <th>Loại</th>
+            <th>Số lượng</th>
+            <th>Công việc sử dụng</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.date }}</td>
+            <td>{{ t.material.name }}</td>
+
+            <td>
+                {% if t.transaction_type == 'IN' %}
+                    <span class="badge bg-success">Nhập</span>
+                {% else %}
+                    <span class="badge bg-danger">Xuất</span>
+                {% endif %}
+            </td>
+
+            <td class="text-end">{{ t.quantity }}</td>
+            <td>
+                {% if t.work_item %}
+                    {{ t.work_item.name }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">
+                Chưa có giao dịch kho
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-secondary">← Quay lại Dashboard</a>
+
+{% endblock %}

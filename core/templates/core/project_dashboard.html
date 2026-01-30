@@ -1,0 +1,133 @@
+
+
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+{% comment %} <pre>
+Labels: {{ chart_labels }}
+Percents: {{ chart_percents }}
+</pre> {% endcomment %}
+
+<h4 class="mb-3">Dashboard dự án: {{ project.name }}</h4>
+
+
+<div class="row">
+
+    <!-- KHỐI LƯỢNG CÔNG VIỆC -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>📋 Khối lượng công việc</h5>
+                <p class="text-muted small mb-2">
+                    Import & quản lý khối lượng từ Excel
+                </p>
+                <a href="{% url 'work_items' project.id %}"
+                   class="btn btn-info btn-sm">
+                    Mở
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NHẬT KÝ THI CÔNG -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>📘 Nhật ký thi công</h5>
+                <p class="text-muted small mb-2">
+                    Ghi nhật ký hàng ngày theo công việc
+                </p>
+                <a href="{% url 'daily_log_calendar' project.id %}"
+                class="btn btn-primary btn-sm">
+                    Mở
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- KHO VẬT TƯ -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>🏗️ Kho vật tư</h5>
+                <p class="text-muted small mb-2">
+                    Quản lý xuất – nhập – tồn
+                </p>
+                <a href="{% url 'warehouse' project.id %}"
+                   class="btn btn-success btn-sm">
+                    Mở
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ĐỊNH MỨC VẬT TƯ -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>📐 Định mức vật tư</h5>
+                <p class="text-muted small mb-2">
+                    Nhập định mức vật tư theo dự án
+                </p>
+                <a href="{% url 'material_norms' project.id %}"
+                   class="btn btn-warning btn-sm">
+                    Mở
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- ===== BIỂU ĐỒ ===== -->
+<div class="card mb-4">
+    <div class="card-header bg-danger text-white">
+        📊 Biểu đồ vượt định mức vật tư
+    </div>
+    <div class="card-body">
+
+        {% if chart_labels %}
+            <div style="height: 420px;">
+                <canvas id="materialChart" height="400"></canvas>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">
+                Chưa có dữ liệu vật tư để hiển thị biểu đồ
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ===== TRUYỀN DATA CHO JS (PHẢI TRƯỚC FILE JS) ===== -->
+{% if chart_labels %}
+<script>
+    window.chartLabels = {{ chart_labels|safe }};
+    window.chartPercents = {{ chart_percents|safe }};
+    window.chartColors = {{ chart_colors|safe }};
+    window.chartMaterialIds = {{ chart_material_ids|safe }};
+    window.projectId = {{ project.id }};
+</script>
+{% endif %}
+
+<!-- ===== LIB & FILE JS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'core/js/material_usage_chart.js' %}"></script>
+
+<!-- ===== CHÚ THÍCH ===== -->
+<div class="card">
+    <div class="card-body">
+        <strong>Chú thích:</strong>
+        <ul class="mb-0">
+            <li><span style="color:#28a745;">🟢</span> Dưới 80% định mức</li>
+            <li><span style="color:#ffc107;">🟡</span> 80% – 100% định mức</li>
+            <li><span style="color:#dc3545;">🔴</span> Vượt định mức</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
